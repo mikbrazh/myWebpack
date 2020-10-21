@@ -7,7 +7,7 @@
     "dev": "cross-env NODE_ENV=development webpack --mode development",
     "prod": "cross-env NODE_ENV=production webpack --mode production",
     "watch": "cross-env NODE_ENV=development webpack --mode development --watch",
-    "start": "cross-env NODE_ENV=development webpack-dev-server --mode development --open",
+    "start": "cross-env NODE_ENV=development webpack-dev-server --mode development --host 192.168.43.12 --port 3000 --open",
     "stats": "webpack --json > stats.json && webpack-bundle-analyzer stats.json"
   },
   "browserslist": "> 0.25%, not dead",
@@ -22,7 +22,6 @@
     "@babel/core": "^7.8.3",
     "@babel/plugin-proposal-class-properties": "^7.8.3",
     "@babel/preset-env": "^7.8.3",
-    "@babel/preset-react": "^7.8.3",
     "@babel/preset-typescript": "^7.8.3",
     "babel-eslint": "^10.0.3",
     "babel-loader": "^8.0.6",
@@ -35,8 +34,12 @@
     "eslint-loader": "^3.0.3",
     "file-loader": "^5.0.2",
     "html-webpack-plugin": "^3.2.0",
-    "less": "^3.10.3",
-    "less-loader": "^5.0.0",
+    "image-minimizer-webpack-plugin": "^1.0.0",
+    "imagemin": "^7.0.1",
+    "imagemin-gifsicle": "^7.0.0",
+    "imagemin-jpegtran": "^7.0.0",
+    "imagemin-optipng": "^8.0.0",
+    "imagemin-svgo": "^8.0.0",
     "mini-css-extract-plugin": "^0.9.0",
     "node-sass": "^4.13.0",
     "optimize-css-assets-webpack-plugin": "^5.0.3",
@@ -54,8 +57,6 @@
     "@babel/polyfill": "^7.8.3",
     "jquery": "^3.4.1",
     "lodash": "^4.17.15",
-    "normalize.css": "^8.0.1",
-    "react": "^16.12.0",
-    "react-dom": "^16.12.0"
+    "normalize.css": "^8.0.1"
   }
 }

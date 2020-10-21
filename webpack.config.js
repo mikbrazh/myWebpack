@@ -7,6 +7,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const {BundleAnalyzerPlugin} = require('webpack-bundle-analyzer');
+const ImageMinimizerPlugin = require('image-minimizer-webpack-plugin');
 // <- ПОДКЛЮЧАЕМ МОДУЛИ
 
 // ОПТИМИЗАЦИЯ КОДА ->
@@ -100,7 +101,28 @@ const plugins = () => {
     ),
     new MiniCssExtractPlugin({
       filename: filename('css')
-    })
+    }),
+    new ImageMinimizerPlugin({
+      minimizerOptions: {
+        // Lossless optimization with custom option
+        // Feel free to experiment with options for better result for you
+        plugins: [
+          ['gifsicle', { interlaced: true }],
+          ['jpegtran', { progressive: true }],
+          ['optipng', { optimizationLevel: 5 }],
+          [
+            'svgo',
+            {
+              plugins: [
+                {
+                  removeViewBox: false,
+                },
+              ],
+            },
+          ],
+        ],
+      },
+    }),
   ];
 
   if (isProd) {
@@ -116,15 +138,15 @@ module.exports = {
   context: path.resolve(__dirname, 'src'),
   mode: 'development',
   entry: {
-    main: ['@babel/polyfill', './index.jsx'],
-    analytics: './analytics.ts'
+    main: ['@babel/polyfill', './index.js'],
+    testTS: './ts-test.ts'
   },
   output: {
     filename: filename('js'),
     path: path.resolve(__dirname, 'dist')
   },
   resolve: {
-    // extensions: ['.js', '.json', '.png'], Чтобы не писать разрешения в файлах
+    // extensions: ['.js', '.json', '.png'], Чтобы не писать расширения в файлах
     alias: {
       '@models': path.resolve(__dirname, 'src/models'),
       '@': path.resolve(__dirname, 'src'),
@@ -133,7 +155,8 @@ module.exports = {
   optimization: optimization(),
   devServer: {
     port: 4200,
-    hot: isDev
+    // hot: isDev,
+    liveReload: true
   },
   devtool: isDev ? 'source-map' : '',
   plugins: plugins(),
@@ -144,16 +167,8 @@ module.exports = {
         use: cssLoaders(),
       },
       {
-        test: /\.less$/,
-        use: cssLoaders('less-loader')
-      },
-      {
         test: /\.s[ac]ss$/,
         use: cssLoaders('sass-loader')
-      },
-      {
-        test: /\.(png|jpg|svg|gif)$/,
-        use: ['file-loader']
       },
       {
         test: /\.(ttf|woff|woff2|eot)$/,
@@ -181,13 +196,17 @@ module.exports = {
         }
       },
       {
-        test: /\.jsx$/,
-        exclude: /node_modules/,
-        loader: {
-          loader: 'babel-loader',
-          options: babelOptions('@babel/preset-react')
-        }
-      }
+        test: /\.(jpe?g|png|gif|svg)$/i,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: '[name].[hash].[ext]',
+              outputPath: 'img',
+            },
+          },
+        ],
+      },
     ]
   }
 };
